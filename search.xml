@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search> 
+  
+  
+    
+    <entry>
+      <title>Comfyui 8GB 显存可使用放大模型</title>
+      <link href="/2026/11/04/comfyui-8gb-%E6%98%BE%E5%AD%98%E5%8F%AF%E4%BD%BF%E7%94%A8%E6%94%BE%E5%A4%A7%E6%A8%A1%E5%9E%8B/"/>
+      <url>/2026/11/04/comfyui-8gb-%E6%98%BE%E5%AD%98%E5%8F%AF%E4%BD%BF%E7%94%A8%E6%94%BE%E5%A4%A7%E6%A8%A1%E5%9E%8B/</url>
+      
+        <content type="html"><![CDATA[<h2 id="实际配置"><a href="#实际配置" class="headerlink" title="实际配置"></a>实际配置</h2><p>表格</p><table><thead><tr><th>部件</th><th>型号</th></tr></thead><tbody><tr><td>GPU</td><td><strong>RTX 4060 Ti 8GB</strong>（显存是硬约束）</td></tr><tr><td>CPU</td><td>i5-13400F（10 核 16 线程）</td></tr><tr><td>内存</td><td>32GB</td></tr></tbody></table><h2 id="推荐方案（8GB-显存适配）"><a href="#推荐方案（8GB-显存适配）" class="headerlink" title="推荐方案（8GB 显存适配）"></a>推荐方案（8GB 显存适配）</h2><p><strong>① 首选：经典 ESRGAN 放大（必装，几乎不占显存）</strong></p><p>放大过程只用几百 MB 显存，8G 卡毫无压力，出图快、效果好：</p><table><thead><tr><th>模型</th><th>大小</th><th>用途</th></tr></thead><tbody><tr><td><code>4x-UltraSharp.pth</code></td><td>63.9MB</td><td>写实照片通用首选</td></tr><tr><td><code>RealESRGAN_x4plus.pth</code></td><td>63.9MB</td><td>通用照片，自然不易过锐</td></tr><tr><td><code>4x_NMKD-Siax_200k.pth</code></td><td>63.9MB</td><td>复杂纹理细节强化</td></tr><tr><td><code>4x_foolhardy_Remacri.pth</code></td><td>63.9MB</td><td>高保真写实放大</td></tr><tr><td>RealESRGAN_x4plus_anime_6B.pth</td><td></td><td>动漫放大</td></tr></tbody></table><p>放到位后就用两个节点：<code>UpscaleModelLoader</code> → <code>ImageUpscaleWithModel</code>。</p><p><strong>② 质量进阶：Ultimate SD Upscale（分块，8G 稳跑）</strong></p><ul><li>图块式 latent+img2img 放大，单块处理，显存占用～4-6G，8G 卡能跑</li><li>用 SD1.5 底模 + 低降噪强度，细节比 ESRGAN 好一档</li><li>建议参数：Tile Size 512、Padding 32、Denoise 0.3-0.5</li></ul><p><strong>③ ControlNet Tile 细化工作流（8G 可行）</strong></p><ul><li>tile 方式 + SD1.5，显存～6-7G，注意配合分块渲染</li><li>效果接近中高端 AI 放大，比单纯 ESRGAN 细腻</li></ul><h2 id="明确不建议"><a href="#明确不建议" class="headerlink" title="明确不建议"></a>明确不建议</h2><ul><li>❌ <strong>SUPIR</strong>：fp16 版起步～12G+，8G 必然爆显存；即便用 fp8 量化也接近卡的上限，没必要折腾。</li><li>❌ 直接对高分辨率图整图跑扩散放大：同样会 OOM。</li></ul><h2 id="小贴士"><a href="#小贴士" class="headerlink" title="小贴士"></a>小贴士</h2><ul><li>你的 4060 Ti 建议在 ComfyUI 启动参数加 <code>--lowvram</code>（或 <code>--medvram</code>），放大高分辨率大图时务必走<strong>分块节点</strong>（Ultimate SD Upscale &#x2F; Tiled Diffusion）。</li><li>模型放 <code>ComfyUI\models\upscale_models\</code>（你当前这个 <code>D:\ComfyUI-aki\comfyui</code> 下还没看到 models 目录，确认一下整合包实际路径，或确认后我帮你建好目录结构）。</li><li>下载源：HuggingFace（<code>Fictiverse/UltraSharp</code>、<code>Kim2091/AnimateSharp</code>、<code>camenduru/RealESRGAN</code>）或 OpenModelDB。</li></ul><p>如果你主要放大的图是写实照片还是动漫，我可以把 ① 里的模型再帮你精简到 1-2 个，并直接给出下载链接。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> comfyui </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 模型 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>comfyui 可以用的放大模型</title>
+      <link href="/2026/11/04/comfyui-%E5%8F%AF%E4%BB%A5%E7%94%A8%E7%9A%84%E6%94%BE%E5%A4%A7%E6%A8%A1%E5%9E%8B/"/>
+      <url>/2026/11/04/comfyui-%E5%8F%AF%E4%BB%A5%E7%94%A8%E7%9A%84%E6%94%BE%E5%A4%A7%E6%A8%A1%E5%9E%8B/</url>
+      
+        <content type="html"><![CDATA[<p>omfyUI 的放大模型主要分两大类：<strong>经典 ESRGAN 系</strong>（走 <code>UpscaleModelLoader</code> + <code>ImageUpscaleWithModel</code> 节点，轻量、全显存通用）和 <strong>扩散 &#x2F; AI 放大</strong>（走 SUPIR、Ultimate SD Upscale 等，质量更高、吃显存）。下面按你的用途和显存给你排个序。</p><h2 id="一、经典-ESRGAN-放大模型（推荐优先）"><a href="#一、经典-ESRGAN-放大模型（推荐优先）" class="headerlink" title="一、经典 ESRGAN 放大模型（推荐优先）"></a>一、经典 ESRGAN 放大模型（推荐优先）</h2><p>放到 <code>ComfyUI\models\upscale_models\</code> 目录即可，配合两个节点使用，4K 以下显存压力很小（3090 24G 随便跑）：</p><p>表格</p><table><thead><tr><th>模型</th><th>特点</th><th>适用</th></tr></thead><tbody><tr><td><code>4x-UltraSharp</code></td><td>通用王者，人像 &#x2F; 风景细节干净</td><td>写实照片首选</td></tr><tr><td><code>RealESRGAN_x4plus</code></td><td>通用、自然，不易过锐</td><td>通用照片</td></tr><tr><td><code>RealESRGAN_x4plus_anime_6B</code></td><td>动漫专用 6B 版</td><td>二次元 &#x2F; 插画</td></tr><tr><td><code>4x-AnimeSharp</code></td><td>动漫线条、色块更锐利</td><td>动漫线稿</td></tr><tr><td><code>4x_NMKD-Siax_200k</code></td><td>细节强，适合复杂纹理</td><td>皮肤 &#x2F; 布料细节</td></tr><tr><td><code>4x_foolhardy_Remacri</code></td><td>保真度高的真实感放大</td><td>写实放大</td></tr><tr><td><code>2x_Valar_v1</code></td><td>轻度放大更自然</td><td>轻微提升分辨率</td></tr></tbody></table><p><strong>下载源</strong>：HuggingFace（搜 <code>Fictiverse/UltraSharp</code>、<code>Kim2091/AnimateSharp</code>、<code>camenduru/RealESRGAN</code>）或 OpenModelDB。</p><h2 id="二、AI-扩散放大（质量天花板，吃显存）"><a href="#二、AI-扩散放大（质量天花板，吃显存）" class="headerlink" title="二、AI &#x2F; 扩散放大（质量天花板，吃显存）"></a>二、AI &#x2F; 扩散放大（质量天花板，吃显存）</h2><p>表格</p><table><thead><tr><th>方案</th><th>显存需求</th><th>特点</th></tr></thead><tbody><tr><td><strong>SUPIR</strong>（<code>SUPIR_model_fp16</code>）</td><td>fp16 版约 12G+ 起步，你的 3090 够用</td><td>目前放大质量最强，走 <code>SUPIR_Upscale</code> 节点；建议配合 <code>ComfyUI-SUPIR</code> 自定义节点</td></tr><tr><td><strong>Ultimate SD Upscale</strong></td><td>低显存也能跑（分块）</td><td>图块式 latent+img2img 放大，老牌稳定，可调降噪强度</td></tr><tr><td><strong>ControlNet Tile + 放大工作流</strong></td><td>显存中等</td><td>用 tile 控制细节保真，AI 细化效果好</td></tr><tr><td><strong>Latent Upscale</strong>（内置 <code>Upscale Latent</code>）</td><td>极低</td><td>速度快但细节一般，适合粗放大</td></tr></tbody></table><h2 id="三、建议（结合-3090-RTX-PRO-6000）"><a href="#三、建议（结合-3090-RTX-PRO-6000）" class="headerlink" title="三、建议（结合 3090 &#x2F; RTX PRO 6000）"></a>三、建议（结合 3090 &#x2F; RTX PRO 6000）</h2><ul><li><strong>日常写实放大</strong>：<code>4x-UltraSharp</code> + ImageUpscaleWithModel，最省事、效果最稳。</li><li><strong>追求极限质量、显存充足</strong>：SUPIR fp16（3090 24G 可跑，PRO 6000 更轻松），尤其适合放大后再出图的工作流。</li><li><strong>动漫 &#x2F; 插画</strong>：<code>4x-AnimeSharp</code> 或 RealESRGAN anime 6B。</li><li><strong>低显存或大批量</strong>：Ultimate SD Upscale 分块处理。</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> comfyui </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 模型 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>Hello World</title>
+      <link href="/2026/11/02/hello-world/"/>
+      <url>/2026/11/02/hello-world/</url>
+      
+        <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo new <span class="hljs-string">&quot;My New Post&quot;</span><br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo server<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo generate<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs bash">$ hexo deploy<br></code></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>]]></content>
+      
+      
+      
+    </entry>
+    
+    
+  
+  
+</search>
